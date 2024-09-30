@@ -6,10 +6,11 @@ import {
 } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import { LoaderCircle } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { authCookie } from "~/lib/auth";
 
 export const meta: MetaFunction = () => {
   return [
@@ -35,7 +36,9 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   if (email.length > 0 && password.length > 0) {
-    return redirect("/home");
+    return redirect("/home", {
+      headers: { "Set-Cookie": await authCookie.serialize(Math.random() * 10) },
+    });
   }
 
   return null;
