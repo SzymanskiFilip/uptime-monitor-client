@@ -6,7 +6,7 @@ import {
 } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import { LoaderCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -44,14 +44,21 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function Index() {
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
+  const $form = useRef<HTMLFormElement>(null);
 
-  const [password, setPassword] = useState<string>(
-    actionData?.errors.email !== undefined ? "" : ""
+  useEffect(
+    function resetFormOnSuccess() {
+      if (navigation.state === "idle" && actionData?.errors !== undefined) {
+        if ($form.current !== null) {
+          $form.current.reset();
+        }
+      }
+    },
+    [navigation.state, actionData]
   );
-
   return (
     <div className="min-h-screen flex flex-row items-center justify-center">
-      <Form method="post">
+      <Form method="post" ref={$form}>
         <h1>Sign in</h1>
         <div className="grid gap-2">
           <div className="grid gap-1">
@@ -64,13 +71,11 @@ export default function Index() {
               disabled={navigation.state === "submitting"}
             />
             <Input
-              id="email"
+              id="password"
               name="password"
               placeholder="Password"
               type="password"
               disabled={navigation.state === "submitting"}
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
             />
           </div>
           {actionData?.errors && (
