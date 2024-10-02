@@ -1,3 +1,11 @@
+import {
+  Form,
+  useActionData,
+  useFetcher,
+  useNavigation,
+  useSubmit,
+} from "@remix-run/react";
+import { FormEvent, FormEventHandler, useTransition } from "react";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -7,8 +15,17 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
+import { Domain } from "~/types/api-types";
 
-export function DomainsList() {
+export function DomainsList({ domains }: { domains: Domain[] }) {
+  const addFetcher = useFetcher({ key: "add-domain" });
+  const submit = useSubmit();
+  const navigation = useNavigation();
+
+  function handleSubmit(event: any) {
+    submit(event.currentTarget, { replace: true });
+  }
+
   return (
     <Card className="w-[600px]">
       <CardHeader>
@@ -18,20 +35,62 @@ export function DomainsList() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-row items-center gap-1">
-          <Input value="https://localhost:3000" disabled={true} />
-          <Button variant={"destructive"} className="w-20">
-            Delete
-          </Button>
-        </div>
+        {domains.map((d) => {
+          return <DomainItem key={d.id} d={d} />;
+        })}
 
-        <div className="flex flex-row items-center gap-1 mt-2">
-          <Input />
-          <Button variant={"outline"} className="w-20">
-            Save
+        <addFetcher.Form
+          className="flex flex-row items-center gap-1 mt-2"
+          method="POST"
+          onSubmit={handleSubmit}
+        >
+          <Input name="domain" />
+          <Input
+            name="action"
+            value="domain-save"
+            readOnly={true}
+            className="hidden"
+          />
+          <Button
+            type="submit"
+            variant={"outline"}
+            className="w-20"
+            disabled={navigation.state === "submitting"}
+          >
+            {addFetcher.state === "submitting" ? "Saving..." : "Save"}
           </Button>
-        </div>
+        </addFetcher.Form>
       </CardContent>
     </Card>
+  );
+}
+
+function DomainItem({ d }: { d: Domain }) {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form
+      className="flex flex-row items-center gap-1 mb-1"
+      method="POST"
+      onSubmit={(e) => {
+        fetcher.submit(e.currentTarget, { method: "POST" });
+      }}
+    >
+      <Input value={d.url} disabled />
+      <Input
+        name="action"
+        value="domain-delete"
+        readOnly={true}
+        className="hidden"
+      />
+      <Button
+        variant={"destructive"}
+        className="w-20"
+        name="urlId"
+        value={d.id}
+      >
+        {fetcher.state === "submitting" ? "Deleting..." : "Delete"}
+      </Button>
+    </fetcher.Form>
   );
 }
