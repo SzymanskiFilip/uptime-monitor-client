@@ -32,7 +32,9 @@ export async function saveDomain(
 }
 
 export async function deleteDomain(formData: FormData) {
-  console.log(formData);
+  await fetch(`http://localhost:1323/domains?id=${formData.get("urlId")}`, {
+    method: "DELETE",
+  });
 }
 
 function isValidURL(url) {

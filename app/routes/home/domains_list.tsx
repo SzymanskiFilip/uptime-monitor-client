@@ -5,7 +5,13 @@ import {
   useNavigation,
   useSubmit,
 } from "@remix-run/react";
-import { FormEvent, FormEventHandler, useTransition } from "react";
+import {
+  FormEvent,
+  FormEventHandler,
+  useEffect,
+  useRef,
+  useTransition,
+} from "react";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -16,15 +22,23 @@ import {
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Domain } from "~/types/api-types";
+import { action } from "./route";
 
 export function DomainsList({ domains }: { domains: Domain[] }) {
   const addFetcher = useFetcher({ key: "add-domain" });
   const submit = useSubmit();
   const navigation = useNavigation();
+  const actionData = useActionData<typeof action>();
+  const formRef = useRef<HTMLFormElement>(null);
 
-  function handleSubmit(event: any) {
-    submit(event.currentTarget, { replace: true });
-  }
+  useEffect(() => {
+    if (
+      actionData?.saveDomainStatus === "success" &&
+      formRef.current !== null
+    ) {
+      formRef.current.reset();
+    }
+  }, [actionData]);
 
   return (
     <Card className="w-[600px]">
@@ -40,9 +54,12 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
         })}
 
         <addFetcher.Form
+          ref={formRef}
           className="flex flex-row items-center gap-1 mt-2"
           method="POST"
-          onSubmit={handleSubmit}
+          onSubmit={(e) => {
+            submit(e.currentTarget, { replace: true });
+          }}
         >
           <Input name="domain" />
           <Input
