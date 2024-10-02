@@ -37,7 +37,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (email.length > 0 && password.length > 0) {
     return redirect("/home", {
-      headers: { "Set-Cookie": await authCookie.serialize(Math.random() * 10) },
+      headers: { "Set-Cookie": await authCookie.serialize(1) },
     });
   }
 
