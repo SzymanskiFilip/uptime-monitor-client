@@ -9,6 +9,7 @@ import { deleteDomain, saveDomain } from "~/service/domains.server";
 import { useEffect } from "react";
 import { useToast } from "~/hooks/use-toast";
 import { Toaster } from "~/components/ui/toaster";
+import { StatsGathered } from "./stats_gathered";
 
 export async function loader(request: LoaderFunctionArgs) {
   await validate(request);
@@ -53,8 +54,13 @@ export default function Home() {
           <section className="flex flex-row items-center justify-start">
             <DomainsList domains={data.domains} />
           </section>
+
+          <section className="mt-2">
+            <StatsGathered />
+          </section>
         </div>
       </div>
+
       <Toaster />
     </>
   );
