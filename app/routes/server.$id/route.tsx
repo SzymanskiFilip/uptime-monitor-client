@@ -1,15 +1,30 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
 import { House } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { StatsGathered } from "../home/stats_gathered";
+import { GeneralDataList } from "./general_data_list";
+import { URLDetails } from "~/types/api-types";
+import {
+  ResponseTimeComparison,
+  ResponseTimeMonth,
+  ResponseTimeWeek,
+  ResponseTimeWeek2,
+} from "./response_time";
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  console.log(params);
-  return null;
+  const res = await fetch(
+    `http://localhost:1323/statistics/details?id=${params.id}`
+  );
+
+  const data: URLDetails = await res.json();
+
+  return json(data);
 }
 
 export default function ServerID() {
+  const data = useLoaderData<typeof loader>();
+
   return (
     <>
       <nav className="flex flex-row items-center justify-between p-4">
@@ -29,20 +44,33 @@ export default function ServerID() {
         <div className="max-w-[1400px] w-full">
           <section>
             <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-              Domain:{" "}
-              <span className="text-red-400">
-                https://localhost:3000/api/test
-              </span>
+              Domain: <span className="text-red-400">{data.url}</span>
               {" Id: "}
-              <span className="text-blue-400">
-                8b91d2b2-daef-4e75-94ef-413e7111562e
-              </span>
+              <span className="text-blue-400">{data.id}</span>
             </h2>
           </section>
-
-          <section></section>
-
-          <section></section>
+          <section>
+            <StatsGathered data={data.response_times} urlData={data.id} />
+          </section>
+          <section className="grid grid-cols-3 gap-2 p-2">
+            <ResponseTimeComparison
+              data={{
+                min: data.minimum,
+                max: data.maximum,
+                response_times: data.response_times,
+              }}
+            />
+            <ResponseTimeWeek response_times={data.response_times_7} />
+            <ResponseTimeWeek2 response_times={data.response_times_14} />
+          </section>
+          <section>outages jak github</section>
+          <section>
+            na home jak sie dodaje domene to na nowo wczytać liste domen
+          </section>
+          <section>
+            do tej listy dodawać socketem
+            <GeneralDataList />
+          </section>
         </div>
       </div>
     </>
