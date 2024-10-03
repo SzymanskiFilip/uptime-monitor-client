@@ -20,6 +20,7 @@ export type URLDetails = {
     date: Date;
     avg: number;
   }[];
+  all: Statistic[];
   outages: Statistic[];
 };
 
