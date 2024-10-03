@@ -8,10 +8,22 @@ import {
   TableRow,
 } from "~/components/ui/table";
 
-export function GeneralDataList() {
+export function GeneralDataList({
+  data,
+}: {
+  data: {
+    id: string;
+    url_id: string;
+    headers: string;
+    success: boolean;
+    response_time: number;
+    saved_at: string;
+  }[];
+}) {
+  console.log(data);
   return (
     <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableCaption>Outages</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead className="w-[180px]">Sent at</TableHead>
@@ -21,12 +33,22 @@ export function GeneralDataList() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow>
-          <TableCell className="font-medium">INV001</TableCell>
-          <TableCell>Paid</TableCell>
-          <TableCell>Credit Card</TableCell>
-          <TableCell className="text-right">$250.00</TableCell>
-        </TableRow>
+        {data.map((row) => {
+          return (
+            <TableRow key={row.id}>
+              <TableCell className="font-medium">
+                {new Date(row.saved_at).toLocaleTimeString("pl")}
+              </TableCell>
+              <TableCell
+                className={`${!row.success ? "bg-red-500 text-white" : ""}`}
+              >
+                {row.success ? "Success" : "Failure"}
+              </TableCell>
+              <TableCell>{row.headers}</TableCell>
+              <TableCell className="text-right">{row.response_time}</TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );
