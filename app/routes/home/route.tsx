@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { useToast } from "~/hooks/use-toast";
 import { Toaster } from "~/components/ui/toaster";
 import { StatsGathered } from "./stats_gathered";
+import { DomainResponseTime } from "~/types/data-types";
 
 export async function loader(request: LoaderFunctionArgs) {
   await validate(request);
@@ -20,8 +21,24 @@ export async function loader(request: LoaderFunctionArgs) {
 
   const body: Domain[] = await res.json();
 
+  const promises = body.map((d) => {
+    return fetch(`http://localhost:1323/statistics?id=${d.id}`);
+  });
+
+  const responses = await Promise.all(promises);
+  const domainResponseTimes: DomainResponseTime[] = await Promise.all(
+    responses.map(async (res) => {
+      const json: DomainResponseTime = await res.json();
+      return {
+        id: json.id,
+        data: json.data,
+      };
+    })
+  );
+
   return json({
     domains: body,
+    domainResponseTimes: domainResponseTimes,
   });
 }
 
@@ -56,7 +73,11 @@ export default function Home() {
           </section>
 
           <section className="mt-2">
-            <StatsGathered />
+            {data.domainResponseTimes.map((responseTime) => {
+              return (
+                <StatsGathered key={responseTime.id} data={responseTime.data} />
+              );
+            })}
           </section>
         </div>
       </div>
@@ -73,7 +94,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (obj.action === "domain-save") {
     const saveDomainStatus = await saveDomain(formData);
-    console.log(formData);
     return json({
       saveDomainStatus: saveDomainStatus,
     });
