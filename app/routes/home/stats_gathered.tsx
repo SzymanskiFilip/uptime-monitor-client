@@ -1,3 +1,4 @@
+import { Link } from "@remix-run/react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 
 import {
@@ -28,16 +29,26 @@ const chartConfig = {
 
 export function StatsGathered({
   data,
+  urlData,
 }: {
   data: { date: string; avg: number }[];
+  urlData: string;
 }) {
   return (
     <Card>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Line Chart - Interactive</CardTitle>
+          <CardTitle>
+            Line Chart - Interactive -{" "}
+            <Link to={`/server/${urlData}`}>
+              <span className="text-blue-500 hover:underline">
+                {" "}
+                URL id {` ${urlData}`}
+              </span>
+            </Link>
+          </CardTitle>
           <CardDescription>
-            Showing total visitors for the last 3 months
+            Showing average server response type for each recorded day.
           </CardDescription>
         </div>
       </CardHeader>

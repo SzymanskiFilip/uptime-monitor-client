@@ -75,7 +75,11 @@ export default function Home() {
           <section className="mt-2">
             {data.domainResponseTimes.map((responseTime) => {
               return (
-                <StatsGathered key={responseTime.id} data={responseTime.data} />
+                <StatsGathered
+                  key={responseTime.id}
+                  data={responseTime.data}
+                  urlData={responseTime.id}
+                />
               );
             })}
           </section>
