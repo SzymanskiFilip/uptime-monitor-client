@@ -7,7 +7,6 @@ import { GeneralDataList } from "./general_data_list";
 import { URLDetails } from "~/types/api-types";
 import {
   ResponseTimeComparison,
-  ResponseTimeMonth,
   ResponseTimeWeek,
   ResponseTimeWeek2,
 } from "./response_time";
@@ -63,13 +62,8 @@ export default function ServerID() {
             <ResponseTimeWeek response_times={data.response_times_7} />
             <ResponseTimeWeek2 response_times={data.response_times_14} />
           </section>
-          <section>outages jak github</section>
           <section>
-            na home jak sie dodaje domene to na nowo wczytać liste domen
-          </section>
-          <section>
-            do tej listy dodawać socketem
-            <GeneralDataList />
+            <GeneralDataList data={data.all} />
           </section>
         </div>
       </div>
