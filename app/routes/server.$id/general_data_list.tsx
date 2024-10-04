@@ -20,7 +20,6 @@ export function GeneralDataList({
     saved_at: string;
   }[];
 }) {
-  console.log(data);
   return (
     <Table>
       <TableCaption>Outages</TableCaption>
