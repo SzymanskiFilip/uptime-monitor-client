@@ -1,5 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ActionFunctionArgs, json, LoaderFunctionArgs } from "@remix-run/node";
+import {
+  ActionFunctionArgs,
+  json,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import { Link, useActionData, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import { validate } from "~/lib/auth.server";
@@ -11,6 +16,13 @@ import { useToast } from "~/hooks/use-toast";
 import { Toaster } from "~/components/ui/toaster";
 import { StatsGathered } from "./stats_gathered";
 import { DomainResponseTime } from "~/types/data-types";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Uptime Monitor" },
+    { name: "description", content: "Welcome to the uptime monitor app" },
+  ];
+};
 
 export async function loader(request: LoaderFunctionArgs) {
   await validate(request);

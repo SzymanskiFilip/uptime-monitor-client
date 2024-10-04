@@ -1,4 +1,4 @@
-import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { json, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { House } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -10,6 +10,13 @@ import {
   ResponseTimeWeek,
   ResponseTimeWeek2,
 } from "./response_time";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Uptime Monitor" },
+    { name: "description", content: "Welcome to the uptime monitor app" },
+  ];
+};
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const res = await fetch(
