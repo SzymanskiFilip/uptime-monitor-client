@@ -1,40 +1,28 @@
-# Welcome to Remix!
+# Uptime Monitor
 
-- 📖 [Remix docs](https://remix.run/docs)
+In order to run the application you need both the client and the app.
 
-## Development
+### Running the Uptime Monitor Worker Application
 
-Run the dev server:
+1. `git clone https://github.com/SzymanskiFilip/uptime-monitor-worker.git`
+2. `cd uptime-monitor-worker`
+3. run `docker compose up -d` or the shell script `sh ./cleanup.sh`
+4. run the app with `go run main/main.go`
 
-```shellscript
-npm run dev
-```
+### Running the Uptime Montior Client
 
-## Deployment
+1. `git clone https://github.com/SzymanskiFilip/uptime-monitor-client.git`
+2. `cd uptime-monitor-client`
+3. `npm i`
+4. `npm run dev`
 
-First, build your app for production:
+## Showcase
 
-```sh
-npm run build
-```
+Mock Authentication and adding URL for the worker to ping periodically
+![GIF 1](./readme/1.gif)
 
-Then run the app in production mode:
+URL Page with statistics generated in the current time
+![GIF 2](./readme/2.gif)
 
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+URL Page with dummy generated statistics added in order to have more data in the charts.
+![GIF 3](./readme/3.gif)
